@@ -85,7 +85,8 @@ class Zeros:
         elif self.metodo=='newton-sp':
             return((optimize.newton(self.f,vi,fprime=None, tol=self.error, maxiter=int(self.max_inter), fprime2=None))) #Calcula la derivada con el método de la secante
         elif self.metodo=='fsolve-sp':
-            F= lambda x : x**3
+            def F(x):# lambda x : x**3
+                return(2*(x)**2)
             return(optimize.fsolve(F,vi,xtol=self.error,maxfev=self.max_inter))
             #return(print(optimize.fsolve(self.f, np.array(vi), args=(), fprime=None, full_output=0, col_deriv=0, xtol=self.error, maxfev=int(self.max_inter))))
         elif self.metodo=='brentq-sp':

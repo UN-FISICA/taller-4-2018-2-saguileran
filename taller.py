@@ -93,8 +93,6 @@ class Zeros:
                 return(optimize.brentq(self.f,vi[0],vi[1],xtol=self.error,maxiter=self.max_inter))
             else: print('Valores iniciales no válidos')
         else: print('Método no válido')
-        
-
     
 if __name__ ==" __main__ ": pass
 else:

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-from sympy import *
+#from sympy import *
 from scipy import optimize
 import numpy as np
+import math
 #from math import *
 
 class Derivada:
@@ -38,13 +38,9 @@ class Zeros:
         self.f=f
         self.metodo=metodo
         self.error=float(error)
-        self.max_inter=float(max_iter)
+        self.max_inter=int(max_iter)
 
     def zero(self,vi): 
-        if type(vi)==tuple:
-            a=float(vi[0])
-            b=float(vi[1])
-        else: vi=float(vi)
         #Newton
         def Newton(vi):
             i,vi=0,float(vi)
@@ -53,6 +49,7 @@ class Zeros:
                 vi=vi-(float(self.f(vi))/F.calc(vi))
                 i+=1
                 if i==self.max_inter: break
+                elif float(self.f(vi))==0:break
             return(vi)
         #Bisectriz
         def Bisection(x):
@@ -88,34 +85,27 @@ class Zeros:
         elif self.metodo=='newton-sp':
             return((optimize.newton(self.f,vi,fprime=None, tol=self.error, maxiter=int(self.max_inter), fprime2=None))) #Calcula la derivada con el método de la secante
         elif self.metodo=='fsolve-sp':
-            def func(x):
-                return(self.f(x))    
-            #return(print(optimize.fsolve(func, np.array(vi), args=(), fprime=None, full_output=0, col_deriv=0, xtol=self.error, maxfev=int(self.max_inter), band=None, epsfcn=None, factor=100, diag=None)))#self.f,vi,xtol=self.max_inter)))
-            return(optimize.fsolve(self.f,a,xtol=self.error,maxfev=self.max_inter))
+            F= lambda x : x**3
+            return(optimize.fsolve(F,vi,xtol=self.error,maxfev=self.max_inter))
+            #return(print(optimize.fsolve(self.f, np.array(vi), args=(), fprime=None, full_output=0, col_deriv=0, xtol=self.error, maxfev=int(self.max_inter))))
         elif self.metodo=='brentq-sp':
-            return(optimize.brentq(self.f,vi[0],vi[1],xtol=self.error,maxiter=self.max_inter))
-           #return(optimize.brentq(self.f, a, b, args=(), xtol=self.error, rtol=8.881784197001252e-16, maxiter=self.max_inter, full_output=False, disp=True))
-            #return(print(self.f, a,b, args=(), xtol=self.error, rtol=8.881784197001252e-16, maxiter=self.max_inter, full_output=False, disp=True))
+            if self.f(vi[0])*self.f(vi[1])<0:
+                return(optimize.brentq(self.f,vi[0],vi[1],xtol=self.error,maxiter=self.max_inter))
+            else: print('Valores iniciales no válidos')
         else: print('Método no válido')
         
 
     
 if __name__ ==" __main__ ": pass
 else:
-    F=Derivada(exp,'segunda')
-    print(F.calc(1))
-    F=Derivada(exp,'central')
-    print(F.calc(1))
-    F=Derivada(exp,'extrapolada')
-    print(F.calc(1))   
-    F=Derivada(exp,'segunda')
-    print(F.calc(1))
+    print(Derivada(exp,'segunda').calc(1))
+    print(Derivada(exp,'central').calc(1))
+    print(Derivada(exp,'extrapolada').calc(1))   
+    print(Derivada(exp,'segunda').calc(1))
     print()
-    I=Zeros(cos,'newton')
-    print(I.zero(0.22))
-    I=Zeros(cos,'bisectriz')
-    print(I.zero((0,3.22)))   
-    I=Zeros(cos,'interpolacion')
-    print(I.zero((0.22,1.22)))
-    I=Zeros(cos,'newton-sp')
-    print(I.zero(5.23))
+    print(Zeros(cos,'newton').zero(0.22))
+    print(Zeros(cos,'bisectriz').zero((0,3.22)))   
+    print(Zeros(cos,'interpolacion').zero((0.22,1.22)))
+    print(Zeros(cos,'newton-sp').zero(5.23))
+    print(Zeros(sin,'brentq-sp').zero((-1.2,2)))
+    print(Zeros(sin,'fsolve-sp').zero((-1.2,2)))
